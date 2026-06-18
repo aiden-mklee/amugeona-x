@@ -30,26 +30,85 @@ h1 {
   text-align: center;
 }
 
-.subtitle {
-  text-align: center;
-  color: #888;
-  font-size: 14px;
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   margin-top: 8px;
 }
 
+#status {
+  font-size: 13px;
+  color: #888;
+  text-align: center;
+}
+
+.refresh-btn {
+  background: none;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 15px;
+  cursor: pointer;
+  color: #aaa;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+
+.refresh-btn:hover {
+  border-color: #ff7a00;
+  color: #ff7a00;
+}
+
+.location-bar {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.location-bar input {
+  flex: 1;
+  padding: 9px 14px;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.location-bar input:focus { border-color: #ff7a00; }
+
+.location-search-btn {
+  padding: 9px 16px;
+  background: #1a1a1a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+
+.location-search-btn:hover { background: #333; }
+
 .result-box {
-  margin: 28px 0;
+  margin: 24px 0;
   background: #fff8f0;
   border: 2px solid #ffd6a0;
   border-radius: 20px;
-  padding: 32px 20px;
+  padding: 28px 20px;
   text-align: center;
   min-height: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.3s ease;
 }
 
@@ -66,13 +125,25 @@ h1 {
 }
 
 #resultEmoji {
-  font-size: 48px;
+  font-size: 44px;
 }
 
 #resultText {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #1a1a1a;
+}
+
+#resultSub {
+  font-size: 12px;
+  color: #999;
+  max-width: 280px;
+}
+
+#resultMenus {
+  font-size: 12px;
+  color: #cc7700;
+  font-weight: 500;
 }
 
 .pick-btn {
@@ -138,82 +209,94 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 240px;
+  max-height: 300px;
   overflow-y: auto;
+}
+
+.loading {
+  text-align: center;
+  color: #bbb;
+  font-size: 14px;
+  padding: 24px 0;
+}
+
+.empty {
+  text-align: center;
+  color: #bbb;
+  font-size: 14px;
+  padding: 16px 0;
 }
 
 .menu-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
+  gap: 12px;
+  padding: 12px 14px;
   background: #fafafa;
-  border-radius: 10px;
-  font-size: 14px;
-  color: #333;
+  border-radius: 12px;
+  border-left: 3px solid #ffd6a0;
 }
 
-.menu-item .tag {
+.restaurant-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.restaurant-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.restaurant-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.tag {
   font-size: 11px;
   color: #888;
   background: #efefef;
   border-radius: 6px;
   padding: 2px 8px;
-  margin-left: 8px;
-}
-
-.menu-item .delete-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #ccc;
-  font-size: 16px;
-  line-height: 1;
-  padding: 0 4px;
-  transition: color 0.15s;
-}
-
-.menu-item .delete-btn:hover { color: #ff4444; }
-
-.add-section {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.add-section input {
-  flex: 1;
-  padding: 10px 14px;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-.add-section input:focus { border-color: #ff7a00; }
-
-.add-section select {
-  padding: 10px 8px;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 13px;
-  outline: none;
-  cursor: pointer;
-  background: #fff;
-}
-
-.add-btn {
-  padding: 10px 16px;
-  background: #1a1a1a;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
   white-space: nowrap;
 }
 
-.add-btn:hover { background: #333; }
+.menus {
+  font-size: 12px;
+  color: #cc7700;
+  font-weight: 500;
+}
+
+.address {
+  font-size: 11px;
+  color: #aaa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.map-btn {
+  flex-shrink: 0;
+  padding: 6px 12px;
+  background: #fff;
+  border: 1.5px solid #ff7a00;
+  border-radius: 8px;
+  color: #ff7a00;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.map-btn:hover {
+  background: #ff7a00;
+  color: #fff;
+}
