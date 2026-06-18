@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 뭐 먹지?</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🍱 오늘 뭐 먹지?</h1>
+    <p class="subtitle">버튼을 눌러 오늘의 점심 메뉴를 뽑아보세요</p>
+
+    <div class="result-box" id="resultBox">
+      <span id="resultEmoji">🎲</span>
+      <span id="resultText">?</span>
+    </div>
+
+    <button class="pick-btn" id="pickBtn" onclick="pickMenu()">
+      오늘 메뉴 추천받기
+    </button>
+
+    <div class="category-filter">
+      <span class="filter-label">카테고리</span>
+      <div class="chips">
+        <button class="chip active" data-cat="all" onclick="setCategory(this, 'all')">전체</button>
+        <button class="chip" data-cat="한식" onclick="setCategory(this, '한식')">한식</button>
+        <button class="chip" data-cat="중식" onclick="setCategory(this, '중식')">중식</button>
+        <button class="chip" data-cat="일식" onclick="setCategory(this, '일식')">일식</button>
+        <button class="chip" data-cat="양식" onclick="setCategory(this, '양식')">양식</button>
+        <button class="chip" data-cat="분식" onclick="setCategory(this, '분식')">분식</button>
+      </div>
+    </div>
+
+    <div class="menu-list" id="menuList"></div>
+
+    <div class="add-section">
+      <input type="text" id="newMenuName" placeholder="메뉴 이름" maxlength="20" />
+      <select id="newMenuCat">
+        <option value="한식">한식</option>
+        <option value="중식">중식</option>
+        <option value="일식">일식</option>
+        <option value="양식">양식</option>
+        <option value="분식">분식</option>
+      </select>
+      <button class="add-btn" onclick="addMenu()">추가</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
