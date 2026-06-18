@@ -1,7 +1,24 @@
 const CAT_EMOJI = {
   '한식': '🍲', '중식': '🥢', '일식': '🍣',
-  '양식': '🍝', '분식': '🌮', '카페': '☕', '기타': '🍽️',
+  '양식': '🍝', '분식': '🌮', '카페': '☕', '학식': '🏫', '기타': '🍽️',
 };
+
+const SCHOOL_ITEMS = [
+  {
+    name: '피오니',
+    cat: '학식',
+    menus: '경복대학교 학생식당 1',
+    address: '경기도 남양주시 진접읍 경복대학교',
+    link: 'https://map.naver.com/v5/search/경복대학교 피오니',
+  },
+  {
+    name: '아질리아',
+    cat: '학식',
+    menus: '경복대학교 학생식당 2',
+    address: '경기도 남양주시 진접읍 경복대학교',
+    link: 'https://map.naver.com/v5/search/경복대학교 아질리아',
+  },
+];
 
 let restaurants = [];
 let currentCategory = 'all';
@@ -18,7 +35,6 @@ function parseCategory(naverCat, searchCat) {
 }
 
 function parseMainMenus(naverCat) {
-  // "음식점>한식>김치찌개,된장찌개" 형태에서 메뉴 항목 추출
   const parts = naverCat.split('>');
   if (parts.length >= 3) {
     return parts.slice(2).join('>').split(',').slice(0, 3).map(s => s.trim()).filter(Boolean).join(' · ');
@@ -37,13 +53,15 @@ async function fetchAndRender(url, label) {
   }
   const items = await res.json();
 
-  restaurants = items.map(item => ({
+  const apiItems = items.map(item => ({
     name: stripHtml(item.title),
     cat: parseCategory(item.category, item.searchCat),
     menus: parseMainMenus(item.category),
     address: item.roadAddress || item.address,
     link: `https://map.naver.com/v5/search/${encodeURIComponent(stripHtml(item.title))}`,
   }));
+
+  restaurants = [...SCHOOL_ITEMS, ...apiItems];
 
   setStatus(`📍 ${label} 식당 ${restaurants.length}곳을 찾았어요`);
   renderChips();
@@ -61,12 +79,15 @@ async function loadRestaurants() {
     const { latitude: lat, longitude: lng } = pos.coords;
     await fetchAndRender(`/api/restaurants?lat=${lat}&lng=${lng}`, '내 주변');
   } catch (err) {
+    // 위치 실패해도 학식은 보여줌
+    restaurants = [...SCHOOL_ITEMS];
     if (err.code === 1) {
-      setStatus('❌ 위치 권한을 허용해주세요 — 또는 아래에 동네를 직접 입력하세요');
+      setStatus('⚠️ 위치 권한 없음 — 학식만 표시 중. 아래에 동네를 입력하세요');
     } else {
-      setStatus('❌ ' + err.message + ' — 아래에 동네를 직접 입력하세요');
+      setStatus('⚠️ 위치를 가져오지 못했어요 — 아래에 동네를 입력하세요');
     }
-    document.getElementById('menuList').innerHTML = '';
+    renderChips();
+    renderList();
   }
 }
 
