@@ -80,6 +80,25 @@ export async function searchFood({ lat, lng, radius }) {
   });
 }
 
+// GPS 좌표 → "OO시 OO동" 역지오코딩
+export async function reverseGeocode({ lat, lng }) {
+  const kakao = await loadKakao();
+  const geocoder = new kakao.maps.services.Geocoder();
+
+  return new Promise((resolve) => {
+    geocoder.coord2RegionCode(lng, lat, (result, status) => {
+      if (status === kakao.maps.services.Status.OK && result.length) {
+        const region = result.find((r) => r.region_type === 'H') || result[0];
+        const city = region.region_2depth_name;
+        const district = region.region_3depth_name;
+        resolve(district ? `${city} ${district}` : city);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
+
 // 키워드 검색 — 최대 2페이지(30개), 저녁 모드 풀 확장용
 export async function searchKeyword({ lat, lng, radius, keyword }) {
   const kakao = await loadKakao();

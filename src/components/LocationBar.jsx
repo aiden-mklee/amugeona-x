@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { geocodeRegion } from '../lib/kakao';
 
-export default function LocationBar({ center, mode, loading, onUseGps, onSelectRegion }) {
+export default function LocationBar({ center, mode, loading, onUseGps, onSelectRegion, gpsAddr }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [candidates, setCandidates] = useState([]);
@@ -43,6 +43,9 @@ export default function LocationBar({ center, mode, loading, onUseGps, onSelectR
         <span className="locbar__pin" aria-hidden>📍</span>
         <span className="locbar__label">
           {center ? center.label : loading ? '위치 찾는 중…' : '위치 없음'}
+          {mode === 'gps' && gpsAddr && (
+            <span className="locbar__addr">({gpsAddr})</span>
+          )}
         </span>
         {mode === 'manual' && <span className="tag tag--sub">검색지역</span>}
         {mode === 'manual' && (

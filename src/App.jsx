@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getCurrentPosition } from './lib/geolocation';
-import { searchFood, searchKeyword } from './lib/kakao';
+import { searchFood, searchKeyword, reverseGeocode } from './lib/kakao';
 import { haversine, walkMinutes, formatDistance } from './lib/geo';
 import {
   GYEONGBOK_NYJ,
@@ -57,6 +57,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isNight, setIsNight] = useState(false);
+  const [gpsAddr, setGpsAddr] = useState(null);
 
   useEffect(() => {
     document.body.classList.toggle('night', isNight);
@@ -70,6 +71,9 @@ export default function App() {
       const pos = await getCurrentPosition();
       setMode('gps');
       setCenter({ ...pos, label: '내 위치' });
+      reverseGeocode({ lat: pos.lat, lng: pos.lng })
+        .then((addr) => { if (addr) setGpsAddr(addr); })
+        .catch(() => {});
     } catch {
       setError('위치 권한이 필요해요. 허용하거나, 아래에서 지역을 검색하세요.');
       setLoading(false);
@@ -81,6 +85,7 @@ export default function App() {
     setPicked(null);
     setMode('manual');
     setCenter(loc);
+    setGpsAddr(null);
   }, []);
 
   useEffect(() => {
@@ -199,6 +204,7 @@ export default function App() {
         loading={loading}
         onUseGps={useGps}
         onSelectRegion={selectRegion}
+        gpsAddr={gpsAddr}
       />
 
       <RadiusSelector presets={RADIUS_PRESETS} value={preset} onChange={setPreset} />

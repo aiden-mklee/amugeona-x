@@ -149,6 +149,12 @@ button {
   color: var(--text-secondary);
   transition: color 0.3s;
 }
+.locbar__addr {
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--text-dim);
+}
 .locbar__reset {
   margin-left: auto;
   background: none;
