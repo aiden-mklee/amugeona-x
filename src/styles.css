@@ -191,7 +191,7 @@ button {
   padding: 9px 14px;
   border: 1.5px solid var(--input-border);
   border-radius: 10px;
-  font-size: 14px;
+  font-size: 16px;
   outline: none;
   transition: border-color 0.15s, background 0.3s, color 0.3s;
   font-family: inherit;
@@ -328,12 +328,28 @@ button {
   animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
   transition: background 0.3s, border-color 0.3s;
 }
+.verdict__card--spinning {
+  cursor: default;
+  animation: spin-pulse 0.5s ease-in-out infinite;
+}
+
+@keyframes spin-pulse {
+  0%, 100% { border-color: var(--accent-border); }
+  50%       { border-color: var(--accent); box-shadow: 0 8px 32px var(--accent-shadow), 0 0 0 3px var(--accent-border); }
+}
+
 .verdict__name {
   display: block;
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text-primary);
+  animation: nameflash 0.12s ease-out;
+}
+
+@keyframes nameflash {
+  0%   { opacity: 0.15; transform: scaleY(0.75); }
+  100% { opacity: 1;    transform: scaleY(1); }
 }
 .verdict__cat {
   display: block;
@@ -383,12 +399,30 @@ button {
 }
 
 /* ── result list ── */
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
 .result-count {
   font-size: 13px;
   font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 10px;
   transition: color 0.3s;
+}
+.result-refresh {
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: var(--text-dim);
+  padding: 2px 4px;
+  transition: color 0.15s, transform 0.2s;
+  line-height: 1;
+}
+.result-refresh:hover {
+  color: var(--accent);
+  transform: rotate(90deg);
 }
 .muted {
   text-align: center;

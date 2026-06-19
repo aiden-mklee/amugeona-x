@@ -58,6 +58,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [isNight, setIsNight] = useState(false);
   const [gpsAddr, setGpsAddr] = useState(null);
+  const [fullPool, setFullPool] = useState([]);
 
   useEffect(() => {
     document.body.classList.toggle('night', isNight);
@@ -153,7 +154,10 @@ export default function App() {
           ? [...CAFETERIAS.map((c) => ({ ...c, distance: 0 })), ...mapped]
           : mapped;
 
-        if (!cancelled) setResults(list);
+        if (!cancelled) {
+          setFullPool(merged);
+          setResults(list);
+        }
       } catch (e) {
         if (!cancelled) setError(e.message);
       } finally {
@@ -165,6 +169,19 @@ export default function App() {
       cancelled = true;
     };
   }, [center, preset, isNight]);
+
+  const refreshResults = () => {
+    if (!fullPool.length) return;
+    const mapped = weightedSample(fullPool, 45, isNight).sort(
+      (a, b) => a.distance - b.distance
+    );
+    const nearCampus = !isNight && center && haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
+    const list = nearCampus
+      ? [...CAFETERIAS.map((c) => ({ ...c, distance: 0 })), ...mapped]
+      : mapped;
+    setPicked(null);
+    setResults(list);
+  };
 
   const pickRandom = () => {
     if (!results.length) return;
@@ -214,6 +231,7 @@ export default function App() {
         onPick={pickRandom}
         disabled={loading || !results.length}
         isNight={isNight}
+        results={results}
       />
 
       {error && <div className="error">{error}</div>}
@@ -225,6 +243,8 @@ export default function App() {
         walkMinutes={walkMinutes}
         formatDistance={formatDistance}
         carMode={preset.mode === 'car'}
+        canRefresh={fullPool.length > 45}
+        onRefresh={refreshResults}
       />
 
       <footer className="foot">

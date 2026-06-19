@@ -5,6 +5,8 @@ export default function ResultList({
   walkMinutes,
   formatDistance,
   carMode,
+  canRefresh,
+  onRefresh,
 }) {
   if (loading) return <p className="muted">주변을 살펴보는 중…</p>;
   if (!results.length)
@@ -12,7 +14,14 @@ export default function ResultList({
 
   return (
     <>
-      <p className="result-count">총 {results.length}곳</p>
+      <div className="result-header">
+        <span className="result-count">총 {results.length}곳</span>
+        {canRefresh && (
+          <button className="result-refresh" onClick={onRefresh} title="목록 새로고침">
+            ↻
+          </button>
+        )}
+      </div>
       <ul className="list" aria-label="주변 후보">
         {results.map((r) => (
           <li
