@@ -81,6 +81,7 @@ button {
   box-shadow: var(--app-shadow);
   margin-top: 24px;
   margin-bottom: 24px;
+  overflow-x: hidden;
   transition: background 0.3s, box-shadow 0.3s;
 }
 
@@ -369,6 +370,8 @@ button {
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--text-primary);
+  word-break: keep-all;
+  overflow-wrap: break-word;
   animation: nameflash 0.12s ease-out;
 }
 
