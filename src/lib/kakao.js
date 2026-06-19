@@ -80,6 +80,48 @@ export async function searchFood({ lat, lng, radius }) {
   });
 }
 
+// 키워드 검색 — 최대 2페이지(30개), 저녁 모드 풀 확장용
+export async function searchKeyword({ lat, lng, radius, keyword }) {
+  const kakao = await loadKakao();
+  const places = new kakao.maps.services.Places();
+
+  const fetchPage = (page) =>
+    new Promise((resolve, reject) => {
+      places.keywordSearch(
+        keyword,
+        (data, status, pagination) => {
+          if (status === kakao.maps.services.Status.OK) {
+            resolve({ data, hasMore: !pagination.isEnd });
+          } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+            resolve({ data: [], hasMore: false });
+          } else {
+            reject(new Error('키워드 검색 실패'));
+          }
+        },
+        {
+          location: new kakao.maps.LatLng(lat, lng),
+          radius,
+          sort: kakao.maps.services.SortBy.DISTANCE,
+          size: 15,
+          page,
+        }
+      );
+    });
+
+  const raw = [];
+  for (let page = 1; page <= 2; page++) {
+    const { data, hasMore } = await fetchPage(page);
+    raw.push(...data);
+    if (!hasMore) break;
+  }
+  const seen = new Set();
+  return raw.filter((r) => {
+    if (seen.has(r.id)) return false;
+    seen.add(r.id);
+    return true;
+  });
+}
+
 // 지역명 검색 — 후보 목록(최대 5개) 반환
 export async function geocodeRegion(query) {
   const kakao = await loadKakao();

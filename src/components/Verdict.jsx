@@ -1,9 +1,8 @@
-// 시그니처 요소: "정해줘" 버튼을 누르면 한 곳이 도장처럼 박힌다.
-export default function Verdict({ picked, onPick, disabled }) {
+export default function Verdict({ picked, onPick, disabled, isNight }) {
   return (
     <div className="verdict">
       <button className="verdict__btn" onClick={onPick} disabled={disabled}>
-        오늘 점심 정해줘
+        {isNight ? '오늘 저녁 정해줘' : '오늘 점심 정해줘'}
       </button>
 
       {picked && (

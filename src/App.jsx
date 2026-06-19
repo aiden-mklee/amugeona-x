@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getCurrentPosition } from './lib/geolocation';
-import { searchFood } from './lib/kakao';
+import { searchFood, searchKeyword } from './lib/kakao';
 import { haversine, walkMinutes, formatDistance } from './lib/geo';
 import {
   GYEONGBOK_NYJ,
@@ -23,6 +23,31 @@ function applyRandomOffset(center, meters) {
   return { lat: center.lat + dlat, lng: center.lng + dlng };
 }
 
+const EVENING_CATS = ['술집', '호프', '포차', '이자카야', '바', '펍', '막걸리', '와인'];
+
+function weightedSample(items, n, isNight) {
+  const pool = [];
+  for (const item of items) {
+    const isEvening =
+      isNight && EVENING_CATS.some((kw) => (item.category_name || '').includes(kw));
+    const weight = isEvening ? 3 : 1;
+    for (let i = 0; i < weight; i++) pool.push(item);
+  }
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  const seen = new Set();
+  const result = [];
+  for (const item of pool) {
+    if (!seen.has(item.id) && result.length < n) {
+      seen.add(item.id);
+      result.push(item);
+    }
+  }
+  return result;
+}
+
 export default function App() {
   const [center, setCenter] = useState(null);
   const [mode, setMode] = useState('gps');
@@ -31,6 +56,11 @@ export default function App() {
   const [picked, setPicked] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isNight, setIsNight] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle('night', isNight);
+  }, [isNight]);
 
   const useGps = useCallback(async () => {
     setError('');
@@ -66,7 +96,6 @@ export default function App() {
       setError('');
       setPicked(null);
       try {
-        // 3곳에서 병렬 검색 → 머지 → 랜덤 45개 → 거리순 정렬
         const offsetFraction = preset.mode === 'car' ? 0.3 : 0.15;
         const searchCenters = [
           center,
@@ -74,11 +103,18 @@ export default function App() {
           applyRandomOffset(center, preset.radius * offsetFraction),
         ];
 
-        const allData = await Promise.all(
-          searchCenters.map((sc) =>
-            searchFood({ lat: sc.lat, lng: sc.lng, radius: preset.radius })
-          )
+        const fdSearches = searchCenters.map((sc) =>
+          searchFood({ lat: sc.lat, lng: sc.lng, radius: preset.radius })
         );
+
+        // 야간 모드: 술집·포차 키워드 검색으로 풀 확장
+        const nightSearches = isNight
+          ? ['술집', '포차'].map((kw) =>
+              searchKeyword({ lat: center.lat, lng: center.lng, radius: preset.radius, keyword: kw })
+            )
+          : [];
+
+        const allData = await Promise.all([...fdSearches, ...nightSearches]);
 
         const seen = new Set();
         const merged = allData
@@ -99,13 +135,13 @@ export default function App() {
             isCafeteria: false,
           }));
 
-        // 셔플 후 45개, 거리순 정렬
-        const mapped = merged
-          .sort(() => Math.random() - 0.5)
-          .slice(0, 45)
-          .sort((a, b) => a.distance - b.distance);
+        // 야간 카테고리 가중치 3배 → 랜덤 45개 → 거리순
+        const mapped = weightedSample(merged, 45, isNight).sort(
+          (a, b) => a.distance - b.distance
+        );
 
-        const nearCampus = haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
+        // 야간 모드에선 학식 숨김
+        const nearCampus = !isNight && haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
         const list = nearCampus
           ? [...CAFETERIAS.map((c) => ({ ...c, distance: 0 })), ...mapped]
           : mapped;
@@ -121,7 +157,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [center, preset]);
+  }, [center, preset, isNight]);
 
   const pickRandom = () => {
     if (!results.length) return;
@@ -134,7 +170,25 @@ export default function App() {
     <div className="app">
       <header className="hero">
         <h1 className="hero__title">아무거나 금지</h1>
-        <p className="hero__sub">오늘 점심, 내가 정한다.</p>
+        <p className="hero__sub">
+          {isNight ? '오늘 밤, 어디서 달릴까?' : '오늘 점심, 내가 정한다.'}
+        </p>
+        <div className="seg">
+          <button
+            className={`seg__btn ${!isNight ? 'seg__btn--on' : ''}`}
+            onClick={() => setIsNight(false)}
+            aria-label="점심 모드"
+          >
+            ☀️
+          </button>
+          <button
+            className={`seg__btn ${isNight ? 'seg__btn--on' : ''}`}
+            onClick={() => setIsNight(true)}
+            aria-label="저녁 모드"
+          >
+            🌙
+          </button>
+        </div>
       </header>
 
       <LocationBar
@@ -147,7 +201,12 @@ export default function App() {
 
       <RadiusSelector presets={RADIUS_PRESETS} value={preset} onChange={setPreset} />
 
-      <Verdict picked={picked} onPick={pickRandom} disabled={loading || !results.length} />
+      <Verdict
+        picked={picked}
+        onPick={pickRandom}
+        disabled={loading || !results.length}
+        isNight={isNight}
+      />
 
       {error && <div className="error">{error}</div>}
 

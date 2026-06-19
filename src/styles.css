@@ -1,3 +1,12 @@
+:root {
+  --accent: var(--accent);
+  --accent-hover: var(--accent-hover);
+  --accent-bg: var(--accent-bg);
+  --accent-border: var(--accent-border);
+  --accent-tint: var(--accent-tint);
+  --accent-shadow: var(--accent-shadow);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,6 +22,17 @@ body {
   align-items: flex-start;
   justify-content: center;
   padding: 24px;
+  transition: background 0.3s;
+}
+
+body.night {
+  background: #e9eaf2;
+  --accent: #3b72d4;
+  --accent-hover: #2d5fa6;
+  --accent-bg: #eef3ff;
+  --accent-border: #b0c8f0;
+  --accent-tint: #e8eeff;
+  --accent-shadow: rgba(59, 114, 212, 0.15);
 }
 
 button {
@@ -51,6 +71,30 @@ button {
   letter-spacing: -0.01em;
 }
 
+/* ── mode segment ── */
+.seg {
+  display: inline-flex;
+  background: #ebebeb;
+  border-radius: 10px;
+  padding: 3px;
+  margin-top: 14px;
+  gap: 2px;
+}
+.seg__btn {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 16px;
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.seg__btn--on {
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+}
+
 /* ── location bar ── */
 .locbar {
   margin-bottom: 16px;
@@ -80,8 +124,8 @@ button {
   transition: all 0.15s;
 }
 .locbar__reset:hover {
-  border-color: #ff7a00;
-  color: #ff7a00;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 .locbar__toggle {
   background: none;
@@ -109,7 +153,7 @@ button {
   font-family: inherit;
 }
 .locbar__search input:focus {
-  border-color: #ff7a00;
+  border-color: var(--accent);
 }
 .locbar__search button {
   padding: 9px 16px;
@@ -154,7 +198,7 @@ button {
   transition: background 0.15s;
 }
 .locbar__candidates li button:hover {
-  background: #fff5e8;
+  background: var(--accent-tint);
 }
 .locbar__candidates li button strong {
   display: block;
@@ -186,13 +230,13 @@ button {
   transition: all 0.15s;
 }
 .chip--on {
-  background: #ff7a00;
-  border-color: #ff7a00;
+  background: var(--accent);
+  border-color: var(--accent);
   color: #fff;
 }
 .chip:hover:not(.chip--on) {
-  border-color: #ff7a00;
-  color: #ff7a00;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 /* ── verdict ── */
@@ -202,7 +246,7 @@ button {
 .verdict__btn {
   width: 100%;
   padding: 16px;
-  background: #ff7a00;
+  background: var(--accent);
   color: #fff;
   border: none;
   border-radius: 14px;
@@ -211,7 +255,7 @@ button {
   transition: background 0.2s, transform 0.1s;
 }
 .verdict__btn:hover {
-  background: #e86d00;
+  background: var(--accent-hover);
 }
 .verdict__btn:active {
   transform: scale(0.97);
@@ -224,14 +268,14 @@ button {
 .verdict__card {
   display: block;
   margin-top: 16px;
-  background: #fff8f0;
-  border: 2px solid #ffd6a0;
+  background: var(--accent-bg);
+  border: 2px solid var(--accent-border);
   border-radius: 20px;
   padding: 24px 20px;
   text-align: center;
   text-decoration: none;
   color: #1a1a1a;
-  box-shadow: 0 8px 28px rgba(255, 122, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 28px var(--accent-shadow), 0 2px 8px rgba(0, 0, 0, 0.06);
   animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .verdict__name {
@@ -260,7 +304,7 @@ button {
   margin-top: 10px;
   font-size: 13px;
   font-weight: 600;
-  color: #ff7a00;
+  color: var(--accent);
 }
 
 .stamp {
@@ -269,8 +313,8 @@ button {
   margin-bottom: 10px;
   font-size: 11px;
   font-weight: 700;
-  color: #ff7a00;
-  border: 1.5px solid #ffd6a0;
+  color: var(--accent);
+  border: 1.5px solid var(--accent-border);
   border-radius: 6px;
   padding: 2px 10px;
   background: #fff;
@@ -312,11 +356,11 @@ button {
 .card {
   background: #fafafa;
   border-radius: 12px;
-  border-left: 3px solid #ffd6a0;
+  border-left: 3px solid var(--accent-border);
   transition: background 0.15s;
 }
 .card:hover {
-  background: #fff5e8;
+  background: var(--accent-tint);
 }
 .card a {
   display: block;
@@ -325,8 +369,8 @@ button {
   color: #1a1a1a;
 }
 .card--picked {
-  border-left-color: #ff7a00;
-  background: #fff8f0;
+  border-left-color: var(--accent);
+  background: var(--accent-bg);
 }
 .card--school {
   border-left-color: #2e7d5b;
@@ -346,7 +390,7 @@ button {
   margin-left: auto;
   font-size: 12px;
   font-weight: 600;
-  color: #ff7a00;
+  color: var(--accent);
   white-space: nowrap;
 }
 .card__cat {
