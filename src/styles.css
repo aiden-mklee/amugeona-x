@@ -1,10 +1,50 @@
 :root {
-  --accent: var(--accent);
-  --accent-hover: var(--accent-hover);
-  --accent-bg: var(--accent-bg);
-  --accent-border: var(--accent-border);
-  --accent-tint: var(--accent-tint);
-  --accent-shadow: var(--accent-shadow);
+  --accent: #ff7a00;
+  --accent-hover: #e86d00;
+  --accent-bg: #fff8f0;
+  --accent-border: #ffd6a0;
+  --accent-tint: #fff5e8;
+  --accent-shadow: rgba(255, 122, 0, 0.13);
+  --app-bg: #fff;
+  --app-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  --card-bg: #fafafa;
+  --card-hover: #fff5e8;
+  --input-bg: #fff;
+  --input-border: #e0e0e0;
+  --border-light: #f0f0f0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555;
+  --text-muted: #888;
+  --text-dim: #aaa;
+  --seg-bg: #ebebeb;
+  --seg-btn-on: #fff;
+  --btn-alt-bg: #1a1a1a;
+  --btn-alt-hover: #333;
+}
+
+body.night {
+  background: #0d1526;
+  --accent: #ffd166;
+  --accent-hover: #f5c030;
+  --accent-bg: rgba(255, 209, 102, 0.08);
+  --accent-border: rgba(255, 209, 102, 0.25);
+  --accent-tint: rgba(255, 209, 102, 0.05);
+  --accent-shadow: rgba(255, 209, 102, 0.15);
+  --app-bg: #162040;
+  --app-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  --card-bg: #1e2d4a;
+  --card-hover: #243458;
+  --input-bg: #1a2540;
+  --input-border: #2a3d60;
+  --border-light: #1e2d4a;
+  --text-primary: #eef2ff;
+  --text-secondary: #a0b0d0;
+  --text-muted: #7890b8;
+  --text-dim: #5a7098;
+  --seg-bg: #0f1c35;
+  --seg-btn-on: #1e2d4a;
+  --btn-alt-bg: #2a3d60;
+  --btn-alt-hover: #344d78;
 }
 
 * {
@@ -25,30 +65,21 @@ body {
   transition: background 0.3s;
 }
 
-body.night {
-  background: #e9eaf2;
-  --accent: #3b72d4;
-  --accent-hover: #2d5fa6;
-  --accent-bg: #eef3ff;
-  --accent-border: #b0c8f0;
-  --accent-tint: #e8eeff;
-  --accent-shadow: rgba(59, 114, 212, 0.15);
-}
-
 button {
   font-family: inherit;
   cursor: pointer;
 }
 
 .app {
-  background: #fff;
+  background: var(--app-bg);
   border-radius: 24px;
   padding: 40px 20px 32px;
   max-width: 480px;
   width: 100%;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--app-shadow);
   margin-top: 24px;
   margin-bottom: 24px;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 /* ── hero ── */
@@ -60,25 +91,28 @@ button {
   font-family: 'Black Han Sans', sans-serif;
   font-size: 32px;
   font-weight: 400;
-  color: #1a1a1a;
+  color: var(--text-primary);
   letter-spacing: -0.01em;
+  transition: color 0.3s;
 }
 .hero__sub {
   margin-top: 8px;
   font-size: 13px;
   font-weight: 500;
-  color: #aaa;
+  color: var(--text-dim);
   letter-spacing: -0.01em;
+  transition: color 0.3s;
 }
 
 /* ── mode segment ── */
 .seg {
   display: inline-flex;
-  background: #ebebeb;
+  background: var(--seg-bg);
   border-radius: 10px;
   padding: 3px;
   margin-top: 14px;
   gap: 2px;
+  transition: background 0.3s;
 }
 .seg__btn {
   background: none;
@@ -91,7 +125,7 @@ button {
   transition: background 0.2s, box-shadow 0.2s;
 }
 .seg__btn--on {
-  background: #fff;
+  background: var(--seg-btn-on);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
 }
 
@@ -110,16 +144,17 @@ button {
 .locbar__label {
   font-size: 14px;
   font-weight: 600;
-  color: #555;
+  color: var(--text-secondary);
+  transition: color 0.3s;
 }
 .locbar__reset {
   margin-left: auto;
   background: none;
-  border: 1.5px solid #e0e0e0;
+  border: 1.5px solid var(--input-border);
   border-radius: 999px;
   font-size: 12px;
   font-weight: 600;
-  color: #888;
+  color: var(--text-muted);
   padding: 4px 10px;
   transition: all 0.15s;
 }
@@ -131,11 +166,12 @@ button {
   background: none;
   border: none;
   font-size: 12px;
-  color: #aaa;
+  color: var(--text-dim);
   margin-top: 6px;
   padding: 0;
   text-decoration: underline;
   text-underline-offset: 2px;
+  transition: color 0.3s;
 }
 .locbar__search {
   display: flex;
@@ -145,19 +181,21 @@ button {
 .locbar__search input {
   flex: 1;
   padding: 9px 14px;
-  border: 1.5px solid #e0e0e0;
+  border: 1.5px solid var(--input-border);
   border-radius: 10px;
   font-size: 14px;
   outline: none;
-  transition: border-color 0.15s;
+  transition: border-color 0.15s, background 0.3s, color 0.3s;
   font-family: inherit;
+  background: var(--input-bg);
+  color: var(--text-primary);
 }
 .locbar__search input:focus {
   border-color: var(--accent);
 }
 .locbar__search button {
   padding: 9px 16px;
-  background: #1a1a1a;
+  background: var(--btn-alt-bg);
   color: #fff;
   border: none;
   border-radius: 10px;
@@ -167,7 +205,7 @@ button {
   transition: background 0.15s;
 }
 .locbar__search button:hover {
-  background: #333;
+  background: var(--btn-alt-hover);
 }
 .locbar__search button:disabled {
   opacity: 0.4;
@@ -180,12 +218,13 @@ button {
 .locbar__candidates {
   list-style: none;
   margin-top: 8px;
-  border: 1.5px solid #e0e0e0;
+  border: 1.5px solid var(--input-border);
   border-radius: 10px;
   overflow: hidden;
+  transition: border-color 0.3s;
 }
 .locbar__candidates li + li {
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid var(--border-light);
 }
 .locbar__candidates li button {
   display: block;
@@ -203,13 +242,15 @@ button {
 .locbar__candidates li button strong {
   display: block;
   font-size: 14px;
-  color: #1a1a1a;
+  color: var(--text-primary);
+  transition: color 0.3s;
 }
 .locbar__candidates li button span {
   display: block;
   font-size: 12px;
-  color: #aaa;
+  color: var(--text-dim);
   margin-top: 2px;
+  transition: color 0.3s;
 }
 
 /* ── radius chips ── */
@@ -222,9 +263,9 @@ button {
 .chip {
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1.5px solid #e0e0e0;
-  background: #fff;
-  color: #555;
+  border: 1.5px solid var(--input-border);
+  background: var(--app-bg);
+  color: var(--text-secondary);
   font-size: 13px;
   font-weight: 500;
   transition: all 0.15s;
@@ -261,8 +302,8 @@ button {
   transform: scale(0.97);
 }
 .verdict__btn:disabled {
-  background: #e0e0e0;
-  color: #aaa;
+  background: var(--input-border);
+  color: var(--text-dim);
 }
 
 .verdict__card {
@@ -274,21 +315,23 @@ button {
   padding: 24px 20px;
   text-align: center;
   text-decoration: none;
-  color: #1a1a1a;
+  color: var(--text-primary);
   box-shadow: 0 8px 28px var(--accent-shadow), 0 2px 8px rgba(0, 0, 0, 0.06);
   animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: background 0.3s, border-color 0.3s;
 }
 .verdict__name {
   display: block;
   font-size: 24px;
   font-weight: 800;
   letter-spacing: -0.03em;
+  color: var(--text-primary);
 }
 .verdict__cat {
   display: block;
   margin-top: 6px;
   font-size: 12px;
-  color: #999;
+  color: var(--text-dim);
 }
 .verdict__menu {
   list-style: none;
@@ -317,7 +360,7 @@ button {
   border: 1.5px solid var(--accent-border);
   border-radius: 6px;
   padding: 2px 10px;
-  background: #fff;
+  background: var(--app-bg);
 }
 .stamp--school {
   color: #2e7d5b;
@@ -335,12 +378,13 @@ button {
 .result-count {
   font-size: 13px;
   font-weight: 600;
-  color: #888;
+  color: var(--text-muted);
   margin-bottom: 10px;
+  transition: color 0.3s;
 }
 .muted {
   text-align: center;
-  color: #bbb;
+  color: var(--text-dim);
   font-size: 14px;
   padding: 24px 0;
 }
@@ -354,19 +398,19 @@ button {
   overflow-y: auto;
 }
 .card {
-  background: #fafafa;
+  background: var(--card-bg);
   border-radius: 12px;
   border-left: 3px solid var(--accent-border);
   transition: background 0.15s;
 }
 .card:hover {
-  background: var(--accent-tint);
+  background: var(--card-hover);
 }
 .card a {
   display: block;
   padding: 12px 14px;
   text-decoration: none;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 .card--picked {
   border-left-color: var(--accent);
@@ -376,6 +420,9 @@ button {
   border-left-color: #2e7d5b;
   background: #f3faf6;
 }
+body.night .card--school {
+  background: rgba(46, 125, 91, 0.12);
+}
 .card__top {
   display: flex;
   align-items: baseline;
@@ -384,7 +431,8 @@ button {
 .card__name {
   font-size: 14px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--text-primary);
+  transition: color 0.3s;
 }
 .card__dist {
   margin-left: auto;
@@ -396,16 +444,18 @@ button {
 .card__cat {
   margin-top: 3px;
   font-size: 11px;
-  color: #aaa;
+  color: var(--text-dim);
+  transition: color 0.3s;
 }
 .card__addr {
   margin-top: 2px;
   font-size: 11px;
-  color: #aaa;
+  color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 260px;
+  transition: color 0.3s;
 }
 .card__menu {
   margin-top: 4px;
@@ -423,16 +473,16 @@ button {
   font-size: 11px;
   padding: 2px 8px;
   border-radius: 6px;
-  background: #efefef;
-  color: #888;
+  background: var(--input-border);
+  color: var(--text-muted);
 }
 .tag--school {
   background: #d4eddf;
   color: #2e7d5b;
 }
 .tag--sub {
-  background: #fff0d6;
-  color: #cc7700;
+  background: var(--accent-bg);
+  color: var(--accent);
 }
 
 /* ── misc ── */
@@ -449,9 +499,10 @@ button {
 .foot {
   margin-top: 24px;
   text-align: center;
-  color: #bbb;
+  color: var(--text-dim);
   font-size: 12px;
   line-height: 1.6;
+  transition: color 0.3s;
 }
 
 @media (prefers-reduced-motion: reduce) {

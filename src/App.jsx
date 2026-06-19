@@ -122,6 +122,8 @@ export default function App() {
           .filter((d) => {
             if (seen.has(d.id)) return false;
             seen.add(d.id);
+            // 야간 모드에서 간식 카테고리 제외
+            if (isNight && (d.category_name || '').includes('간식')) return false;
             return true;
           })
           .map((d) => ({
