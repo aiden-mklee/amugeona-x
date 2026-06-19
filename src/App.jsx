@@ -23,7 +23,7 @@ function applyRandomOffset(center, meters) {
   return { lat: center.lat + dlat, lng: center.lng + dlng };
 }
 
-const EVENING_CATS = ['술집', '호프', '포차', '이자카야', '바', '펍', '막걸리', '와인'];
+const EVENING_CATS = ['술집', '호프', '포차', '포장마차', '실내포장마차', '이자카야', '바', '펍', '막걸리', '와인', '맥주', '요리주점', '칵테일'];
 
 function weightedSample(items, n, isNight) {
   const pool = [];
