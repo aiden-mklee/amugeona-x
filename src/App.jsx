@@ -66,18 +66,28 @@ export default function App() {
       setError('');
       setPicked(null);
       try {
-        const searchCenter =
-          preset.mode === 'car'
-            ? applyRandomOffset(center, preset.radius * 0.25)
-            : center;
+        // 3곳에서 병렬 검색 → 머지 → 랜덤 45개 → 거리순 정렬
+        const offsetFraction = preset.mode === 'car' ? 0.3 : 0.15;
+        const searchCenters = [
+          center,
+          applyRandomOffset(center, preset.radius * offsetFraction),
+          applyRandomOffset(center, preset.radius * offsetFraction),
+        ];
 
-        const data = await searchFood({
-          lat: searchCenter.lat,
-          lng: searchCenter.lng,
-          radius: preset.radius,
-        });
+        const allData = await Promise.all(
+          searchCenters.map((sc) =>
+            searchFood({ lat: sc.lat, lng: sc.lng, radius: preset.radius })
+          )
+        );
 
-        const mapped = data
+        const seen = new Set();
+        const merged = allData
+          .flat()
+          .filter((d) => {
+            if (seen.has(d.id)) return false;
+            seen.add(d.id);
+            return true;
+          })
           .map((d) => ({
             id: d.id,
             place_name: d.place_name,
@@ -87,7 +97,12 @@ export default function App() {
             address: d.road_address_name || d.address_name,
             distance: haversine(center, { lat: Number(d.y), lng: Number(d.x) }),
             isCafeteria: false,
-          }))
+          }));
+
+        // 셔플 후 45개, 거리순 정렬
+        const mapped = merged
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 45)
           .sort((a, b) => a.distance - b.distance);
 
         const nearCampus = haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
