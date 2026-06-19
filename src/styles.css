@@ -5,7 +5,8 @@
 }
 
 body {
-  font-family: 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+  letter-spacing: -0.02em;
   background: #f5f0eb;
   min-height: 100vh;
   display: flex;
@@ -36,14 +37,18 @@ button {
   text-align: center;
 }
 .hero__title {
-  font-size: 28px;
-  font-weight: 800;
+  font-family: 'Black Han Sans', sans-serif;
+  font-size: 32px;
+  font-weight: 400;
   color: #1a1a1a;
+  letter-spacing: -0.01em;
 }
 .hero__sub {
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 13px;
-  color: #888;
+  font-weight: 500;
+  color: #aaa;
+  letter-spacing: -0.01em;
 }
 
 /* ── location bar ── */
@@ -226,12 +231,14 @@ button {
   text-align: center;
   text-decoration: none;
   color: #1a1a1a;
-  animation: popin 0.3s ease;
+  box-shadow: 0 8px 28px rgba(255, 122, 0, 0.13), 0 2px 8px rgba(0, 0, 0, 0.06);
+  animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .verdict__name {
   display: block;
-  font-size: 22px;
-  font-weight: 700;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
 }
 .verdict__cat {
   display: block;
@@ -273,15 +280,11 @@ button {
   border-color: #a8d5be;
 }
 
-@keyframes popin {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+@keyframes slam {
+  0%   { opacity: 0; transform: scale(1.08) translateY(-10px); }
+  55%  { opacity: 1; transform: scale(0.97) translateY(3px); }
+  78%  { transform: scale(1.02) translateY(0); }
+  100% { transform: scale(1) translateY(0); }
 }
 
 /* ── result list ── */
