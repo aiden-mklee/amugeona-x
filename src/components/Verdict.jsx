@@ -71,7 +71,7 @@ export default function Verdict({ picked, onPick, disabled, isNight, results }) 
             onClick={spinning ? (e) => e.preventDefault() : undefined}
           >
             <strong key={flashKey} className="verdict__name">
-              {displayName}
+              <span>{displayName}</span>
             </strong>
             {spinning && (
               <span className="verdict__spinning-hint">결정하는 중…</span>
