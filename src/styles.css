@@ -334,7 +334,7 @@ button {
   min-height: 130px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
 }
 .verdict__card--spinning .verdict__name {
