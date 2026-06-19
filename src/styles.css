@@ -20,6 +20,7 @@
   --seg-btn-on: #fff;
   --btn-alt-bg: #1a1a1a;
   --btn-alt-hover: #333;
+  --accent-text: #fff;
 }
 
 body.night {
@@ -45,6 +46,7 @@ body.night {
   --seg-btn-on: #1e2d4a;
   --btn-alt-bg: #2a3d60;
   --btn-alt-hover: #344d78;
+  --accent-text: #0d1526;
 }
 
 * {
@@ -273,7 +275,7 @@ button {
 .chip--on {
   background: var(--accent);
   border-color: var(--accent);
-  color: #fff;
+  color: var(--accent-text);
 }
 .chip:hover:not(.chip--on) {
   border-color: var(--accent);
@@ -288,7 +290,7 @@ button {
   width: 100%;
   padding: 16px;
   background: var(--accent);
-  color: #fff;
+  color: var(--accent-text);
   border: none;
   border-radius: 14px;
   font-size: 17px;
