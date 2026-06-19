@@ -64,6 +64,7 @@ body {
   align-items: flex-start;
   justify-content: center;
   padding: 24px;
+  overflow-x: hidden;
   transition: background 0.3s;
 }
 
@@ -326,8 +327,11 @@ button {
   text-decoration: none;
   color: var(--text-primary);
   box-shadow: 0 8px 28px var(--accent-shadow), 0 2px 8px rgba(0, 0, 0, 0.06);
-  animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
-  transition: background 0.3s, border-color 0.3s;
+  animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1), glow-pulse 2.8s ease-in-out 0.45s infinite;
+}
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 8px 28px var(--accent-shadow), 0 2px 8px rgba(0,0,0,0.06); }
+  50%       { box-shadow: 0 12px 48px rgba(255,122,0,0.30), 0 4px 16px rgba(0,0,0,0.10); }
 }
 .verdict__card--spinning {
   cursor: default;
@@ -339,12 +343,18 @@ button {
   justify-content: center;
 }
 .verdict__card--spinning .verdict__name {
+  width: 100%;
   height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
   animation: nameflash 0.12s ease-out;
+}
+.verdict__card--spinning .verdict__name span {
+  max-width: 100%;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 .verdict__spinning-hint {
   display: block;
