@@ -7,6 +7,7 @@ import {
   CAMPUS_RADIUS_M,
   CAFETERIAS,
   RADIUS_PRESETS,
+  SPECIAL_PICKS,
 } from './config/places';
 import LocationBar from './components/LocationBar';
 import RadiusSelector from './components/RadiusSelector';
@@ -185,8 +186,9 @@ export default function App() {
 
   const pickRandom = () => {
     if (!results.length) return;
-    const pool = picked ? results.filter((r) => r.id !== picked.id) : results;
-    const source = pool.length ? pool : results;
+    const allOptions = [...results, ...SPECIAL_PICKS];
+    const pool = picked ? allOptions.filter((r) => r.id !== picked.id) : allOptions;
+    const source = pool.length ? pool : allOptions;
     setPicked(source[Math.floor(Math.random() * source.length)]);
   };
 

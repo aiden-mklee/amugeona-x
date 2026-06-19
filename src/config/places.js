@@ -30,6 +30,28 @@ export const CAFETERIAS = [
   },
 ];
 
+// 뽑기 풀에만 섞이는 특수 항목 (목록엔 미노출)
+export const SPECIAL_PICKS = [
+  {
+    id: 'special-delivery',
+    place_name: '🛵 오늘은 배달!',
+    category_name: '배달 앱을 켜봐요',
+    isSpecial: true,
+  },
+  {
+    id: 'special-convenience',
+    place_name: '🏪 오늘은 편의점!',
+    category_name: '가까운 편의점으로',
+    isSpecial: true,
+  },
+  {
+    id: 'special-cafeteria',
+    place_name: '🏢 오늘은 구내식당!',
+    category_name: '사내 식당으로',
+    isSpecial: true,
+  },
+];
+
 // 거리 프리셋. radius 는 카카오 카테고리 검색에 넘기는 미터값.
 export const RADIUS_PRESETS = [
   { id: 'walk5', label: '도보 5분', radius: 350, mode: 'walk' },

@@ -58,34 +58,35 @@ export default function Verdict({ picked, onPick, disabled, isNight, results }) 
         {isNight ? '오늘 저녁 정해줘' : '오늘 점심 정해줘'}
       </button>
 
-      {picked && displayName && (
-        <a
-          key={spinning ? 'spin' : picked.id}
-          className={`verdict__card${spinning ? ' verdict__card--spinning' : ''}`}
-          href={!spinning ? picked.place_url : undefined}
-          target="_blank"
-          rel="noreferrer"
-          onClick={spinning ? (e) => e.preventDefault() : undefined}
-        >
-          {!spinning && picked.isCafeteria && (
-            <span className="stamp stamp--school">학식</span>
-          )}
-          <strong key={flashKey} className="verdict__name">
-            {displayName}
-          </strong>
-          {!spinning && picked.isCafeteria && picked.address && (
-            <span className="verdict__cat">{picked.address}</span>
-          )}
-          {!spinning && !picked.isCafeteria && picked.category_name && (
-            <span className="verdict__cat">{picked.category_name}</span>
-          )}
-          {!spinning && (
-            <span className="verdict__go">
-              {picked.isCafeteria ? '오늘 메뉴 확인하기 →' : '카카오맵에서 보기 →'}
-            </span>
-          )}
-        </a>
-      )}
+      {picked && displayName && (() => {
+        const Tag = (!spinning && picked.place_url) ? 'a' : 'div';
+        const linkProps = (!spinning && picked.place_url)
+          ? { href: picked.place_url, target: '_blank', rel: 'noreferrer' }
+          : {};
+        return (
+          <Tag
+            key={spinning ? 'spin' : picked.id}
+            className={`verdict__card${spinning ? ' verdict__card--spinning' : ''}`}
+            {...linkProps}
+            onClick={spinning ? (e) => e.preventDefault() : undefined}
+          >
+            {!spinning && picked.isCafeteria && (
+              <span className="stamp stamp--school">학식</span>
+            )}
+            <strong key={flashKey} className="verdict__name">
+              {displayName}
+            </strong>
+            {!spinning && picked.category_name && (
+              <span className="verdict__cat">{picked.category_name}</span>
+            )}
+            {!spinning && picked.place_url && (
+              <span className="verdict__go">
+                {picked.isCafeteria ? '오늘 메뉴 확인하기 →' : '카카오맵에서 보기 →'}
+              </span>
+            )}
+          </Tag>
+        );
+      })()}
     </div>
   );
 }

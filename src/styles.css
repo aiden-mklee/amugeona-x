@@ -332,6 +332,12 @@ button {
   cursor: default;
   animation: spin-pulse 0.5s ease-in-out infinite;
 }
+.verdict__card--spinning .verdict__name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
 
 @keyframes spin-pulse {
   0%, 100% { border-color: var(--accent-border); }
