@@ -70,13 +70,13 @@ export default function Verdict({ picked, onPick, disabled, isNight, results }) 
             {...linkProps}
             onClick={spinning ? (e) => e.preventDefault() : undefined}
           >
-            {!spinning && picked.isCafeteria && (
-              <span className="stamp stamp--school">학식</span>
-            )}
             <strong key={flashKey} className="verdict__name">
               {displayName}
             </strong>
-            {!spinning && picked.category_name && (
+            {spinning && (
+              <span className="verdict__spinning-hint">결정하는 중…</span>
+            )}
+            {!spinning && picked.category_name && !picked.isCafeteria && (
               <span className="verdict__cat">{picked.category_name}</span>
             )}
             {!spinning && picked.place_url && (

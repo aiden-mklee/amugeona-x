@@ -331,12 +331,31 @@ button {
 .verdict__card--spinning {
   cursor: default;
   animation: spin-pulse 0.5s ease-in-out infinite;
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 .verdict__card--spinning .verdict__name {
-  white-space: nowrap;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
+  animation: nameflash 0.12s ease-out;
+}
+.verdict__spinning-hint {
+  display: block;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  animation: hint-pulse 0.9s ease-in-out infinite;
+}
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.3; }
+  50%       { opacity: 1; }
 }
 
 @keyframes spin-pulse {
@@ -359,7 +378,7 @@ button {
 }
 .verdict__cat {
   display: block;
-  margin-top: 6px;
+  margin-top: 8px;
   font-size: 12px;
   color: var(--text-dim);
 }
@@ -374,7 +393,7 @@ button {
 }
 .verdict__go {
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 16px;
   font-size: 13px;
   font-weight: 600;
   color: var(--accent);
