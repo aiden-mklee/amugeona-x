@@ -76,11 +76,11 @@ export default function Verdict({ picked, onPick, disabled, isNight, results, on
       `오늘 ${label}은 ${picked.place_name}!`,
       url,
       '아무거나금지가 골라줬어요 🎯',
-    ].filter(Boolean).join('\n');
+    ].filter(Boolean).map((s) => s.trim()).join('\n');
 
     if (navigator.share) {
-      // url을 text 안에 포함해 카카오톡에서 한 메시지로 전송
-      try { await navigator.share({ title: picked.place_name, text: body }); } catch {}
+      // title 제외 — 일부 앱이 title을 text 뒤에 붙여 여분의 줄바꿈 발생
+      try { await navigator.share({ text: body }); } catch {}
     } else {
       try {
         await navigator.clipboard.writeText(body);
