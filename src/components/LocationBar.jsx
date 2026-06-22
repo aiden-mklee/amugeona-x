@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { geocodeRegion } from '../lib/kakao';
 
-export default function LocationBar({ center, mode, loading, onUseGps, onSelectRegion, gpsAddr }) {
+export default function LocationBar({ center, mode, loading, onUseGps, onSelectRegion, gpsAddr, gpsBlocked }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [candidates, setCandidates] = useState([]);
@@ -67,13 +67,29 @@ export default function LocationBar({ center, mode, loading, onUseGps, onSelectR
         )}
       </div>
 
-      <button
-        className="locbar__toggle"
-        onClick={() => (open ? handleClose() : setOpen(true))}
-        aria-expanded={open}
-      >
-        {open ? '닫기' : '다른 지역에서 찾기'}
-      </button>
+      <p className="locbar__privacy">내 주변 식당을 찾는 데만 위치를 써요. 저장하지 않아요.</p>
+
+      {gpsBlocked ? (
+        <div className="locbar__blocked">
+          <p className="locbar__blocked-msg">
+            위치 권한이 거부됐어요. 브라우저 설정에서 이 사이트의 위치를 허용한 뒤 새로고침해주세요.
+          </p>
+          <button
+            className="locbar__blocked-cta"
+            onClick={() => setOpen(true)}
+          >
+            다른 지역에서 찾기 →
+          </button>
+        </div>
+      ) : (
+        <button
+          className="locbar__toggle"
+          onClick={() => (open ? handleClose() : setOpen(true))}
+          aria-expanded={open}
+        >
+          {open ? '닫기' : '다른 지역에서 찾기'}
+        </button>
+      )}
 
       {open && (
         <div className="locbar__search-wrap">

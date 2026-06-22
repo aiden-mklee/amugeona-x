@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { getCurrentPosition } from './lib/geolocation';
 import { searchFood, searchKeyword, reverseGeocode } from './lib/kakao';
 import { haversine, walkMinutes, formatDistance } from './lib/geo';
@@ -13,6 +13,8 @@ import LocationBar from './components/LocationBar';
 import RadiusSelector from './components/RadiusSelector';
 import Verdict from './components/Verdict';
 import ResultList from './components/ResultList';
+import SettingsSheet from './components/SettingsSheet';
+import InstallBanner from './components/InstallBanner';
 
 function applyRandomOffset(center, meters) {
   const R = 6371000;
@@ -49,6 +51,46 @@ function weightedSample(items, n, isNight) {
   return result;
 }
 
+function applyExclusion(pool, excluded) {
+  return pool.filter((d) => {
+    const cat = d.category_name || '';
+    if (excluded.has('bar') && EVENING_CATS.some((kw) => cat.includes(kw))) return false;
+    if (excluded.has('snack') && cat.includes('간식')) return false;
+    return true;
+  });
+}
+
+// fullPool → 블랙리스트·카테고리 필터 → weightedSample → 거리정렬 → 학식 prepend
+function buildResults(pool, excluded, blacklist, isNight, center) {
+  const blacklistIds = new Set(blacklist.map((b) => b.id));
+  const withoutBlacklist = pool.filter((d) => !blacklistIds.has(d.id));
+  const filtered = applyExclusion(withoutBlacklist, excluded);
+  const mapped = weightedSample(filtered, 45, isNight).sort((a, b) => a.distance - b.distance);
+  const nearCampus = !isNight && center && haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
+  return nearCampus
+    ? [...CAFETERIAS.map((c) => ({ ...c, distance: 0 })), ...mapped]
+    : mapped;
+}
+
+function loadExcluded() {
+  try {
+    const saved = localStorage.getItem('amugeona:excluded');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function loadBlacklist() {
+  try {
+    const saved = localStorage.getItem('amugeona:blacklist');
+    return saved ? JSON.parse(saved) : [];
+  } catch {
+    return [];
+  }
+}
+
+
 export default function App() {
   const [center, setCenter] = useState(null);
   const [mode, setMode] = useState('gps');
@@ -60,13 +102,52 @@ export default function App() {
   const [isNight, setIsNight] = useState(false);
   const [gpsAddr, setGpsAddr] = useState(null);
   const [fullPool, setFullPool] = useState([]);
+  const [excluded, setExcluded] = useState(loadExcluded);
+  const [blacklist, setBlacklist] = useState(loadBlacklist);
+  const [recentPicked, setRecentPicked] = useState([]);
+  const [gpsBlocked, setGpsBlocked] = useState(false);
+
+  // ref로 유지해 API useEffect에서 dep 없이 최신값 읽음
+  const excludedRef = useRef(excluded);
+  const blacklistRef = useRef(blacklist);
+  useEffect(() => { excludedRef.current = excluded; }, [excluded]);
+  useEffect(() => { blacklistRef.current = blacklist; }, [blacklist]);
 
   useEffect(() => {
     document.body.classList.toggle('night', isNight);
   }, [isNight]);
 
+  const toggleExcluded = useCallback((id) => {
+    setExcluded((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      try { localStorage.setItem('amugeona:excluded', JSON.stringify([...next])); } catch {}
+      return next;
+    });
+  }, []);
+
+  const addToBlacklist = useCallback((id, place_name) => {
+    setBlacklist((prev) => {
+      if (prev.some((b) => b.id === id)) return prev;
+      const next = [...prev, { id, place_name }];
+      try { localStorage.setItem('amugeona:blacklist', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+
+  const removeFromBlacklist = useCallback((id) => {
+    setBlacklist((prev) => {
+      const next = prev.filter((b) => b.id !== id);
+      try { localStorage.setItem('amugeona:blacklist', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
+
+
   const useGps = useCallback(async () => {
     setError('');
+    setGpsBlocked(false);
     setLoading(true);
     setPicked(null);
     try {
@@ -76,8 +157,12 @@ export default function App() {
       reverseGeocode({ lat: pos.lat, lng: pos.lng })
         .then((addr) => { if (addr) setGpsAddr(addr); })
         .catch(() => {});
-    } catch {
-      setError('위치 권한이 필요해요. 허용하거나, 아래에서 지역을 검색하세요.');
+    } catch (e) {
+      if (e.code === 1) {
+        setGpsBlocked(true);
+      } else {
+        setError('위치를 가져올 수 없어요. 지역을 직접 검색해보세요.');
+      }
       setLoading(false);
     }
   }, []);
@@ -94,6 +179,7 @@ export default function App() {
     useGps();
   }, [useGps]);
 
+  // API 검색 — excluded·blacklist는 ref로 참조해 dep 오염 방지
   useEffect(() => {
     if (!center) return;
     let cancelled = false;
@@ -114,7 +200,6 @@ export default function App() {
           searchFood({ lat: sc.lat, lng: sc.lng, radius: preset.radius })
         );
 
-        // 야간 모드: 술집·포차 키워드 검색으로 풀 확장
         const nightSearches = isNight
           ? ['술집', '포차'].map((kw) =>
               searchKeyword({ lat: center.lat, lng: center.lng, radius: preset.radius, keyword: kw })
@@ -129,7 +214,6 @@ export default function App() {
           .filter((d) => {
             if (seen.has(d.id)) return false;
             seen.add(d.id);
-            // 야간 모드에서 간식 카테고리 제외
             if (isNight && (d.category_name || '').includes('간식')) return false;
             return true;
           })
@@ -144,20 +228,9 @@ export default function App() {
             isCafeteria: false,
           }));
 
-        // 야간 카테고리 가중치 3배 → 랜덤 45개 → 거리순
-        const mapped = weightedSample(merged, 45, isNight).sort(
-          (a, b) => a.distance - b.distance
-        );
-
-        // 야간 모드에선 학식 숨김
-        const nearCampus = !isNight && haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
-        const list = nearCampus
-          ? [...CAFETERIAS.map((c) => ({ ...c, distance: 0 })), ...mapped]
-          : mapped;
-
         if (!cancelled) {
           setFullPool(merged);
-          setResults(list);
+          setResults(buildResults(merged, excludedRef.current, blacklistRef.current, isNight, center));
         }
       } catch (e) {
         if (!cancelled) setError(e.message);
@@ -166,30 +239,53 @@ export default function App() {
       }
     })();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [center, preset, isNight]);
+
+  // excluded 변경 시 API 재호출 없이 재계산
+  useEffect(() => {
+    if (!fullPool.length) return;
+    setPicked(null);
+    setResults(buildResults(fullPool, excluded, blacklistRef.current, isNight, center));
+  }, [excluded]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // blacklist 변경 시 API 재호출 없이 재계산
+  useEffect(() => {
+    if (!fullPool.length) return;
+    setPicked(null);
+    setResults(buildResults(fullPool, excludedRef.current, blacklist, isNight, center));
+  }, [blacklist]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const refreshResults = () => {
     if (!fullPool.length) return;
-    const mapped = weightedSample(fullPool, 45, isNight).sort(
-      (a, b) => a.distance - b.distance
-    );
-    const nearCampus = !isNight && center && haversine(center, GYEONGBOK_NYJ) <= CAMPUS_RADIUS_M;
-    const list = nearCampus
-      ? [...CAFETERIAS.map((c) => ({ ...c, distance: 0 })), ...mapped]
-      : mapped;
+    setResults(buildResults(fullPool, excluded, blacklist, isNight, center));
     setPicked(null);
-    setResults(list);
   };
 
+  const activeSpecials = SPECIAL_PICKS.filter((sp) => {
+    if (sp.id === 'special-delivery' && excluded.has('delivery')) return false;
+    if (sp.id === 'special-convenience' && excluded.has('convenience')) return false;
+    if (sp.id === 'special-cafeteria' && excluded.has('cafeteria')) return false;
+    return true;
+  });
+  const canPick = results.length > 0 || activeSpecials.length > 0;
+  const filterEmpty = !loading && fullPool.length > 0 && !canPick;
+
+  const blacklistIds = new Set(blacklist.map((b) => b.id));
+  const filteredPoolSize = applyExclusion(
+    fullPool.filter((d) => !blacklistIds.has(d.id)),
+    excluded
+  ).length;
+
   const pickRandom = () => {
-    if (!results.length) return;
-    const allOptions = [...results, ...SPECIAL_PICKS];
-    const pool = picked ? allOptions.filter((r) => r.id !== picked.id) : allOptions;
-    const source = pool.length ? pool : allOptions;
-    setPicked(source[Math.floor(Math.random() * source.length)]);
+    const allOptions = [...results, ...activeSpecials];
+    if (!allOptions.length) return;
+    // 최근 뽑힌 3곳 제외 → 없으면 전체에서 선택
+    let pool = allOptions.filter((r) => !recentPicked.includes(r.id));
+    if (!pool.length) pool = allOptions;
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    setPicked(choice);
+    setRecentPicked((prev) => [choice.id, ...prev].slice(0, 3));
   };
 
   return (
@@ -215,6 +311,12 @@ export default function App() {
             🌙
           </button>
         </div>
+        <SettingsSheet
+          excluded={excluded}
+          onToggleExcluded={toggleExcluded}
+          blacklist={blacklist}
+          onRemoveFromBlacklist={removeFromBlacklist}
+        />
         <button
           className="hero__reload"
           onClick={() => window.location.reload()}
@@ -232,6 +334,7 @@ export default function App() {
         onUseGps={useGps}
         onSelectRegion={selectRegion}
         gpsAddr={gpsAddr}
+        gpsBlocked={gpsBlocked}
       />
 
       <RadiusSelector presets={RADIUS_PRESETS} value={preset} onChange={setPreset} />
@@ -239,9 +342,10 @@ export default function App() {
       <Verdict
         picked={picked}
         onPick={pickRandom}
-        disabled={loading || !results.length}
+        disabled={loading || !canPick}
         isNight={isNight}
         results={results}
+        onBlacklist={addToBlacklist}
       />
 
       {error && <div className="error">{error}</div>}
@@ -253,13 +357,17 @@ export default function App() {
         walkMinutes={walkMinutes}
         formatDistance={formatDistance}
         carMode={preset.mode === 'car'}
-        canRefresh={fullPool.length > 45}
+        canRefresh={filteredPoolSize > 45}
         onRefresh={refreshResults}
+        filterEmpty={filterEmpty}
+        onBlacklist={addToBlacklist}
       />
 
       <footer className="foot">
         결과를 누르면 카카오맵으로 이동합니다 · 메뉴·길찾기는 거기서 확인
       </footer>
+
+      <InstallBanner />
     </div>
   );
 }

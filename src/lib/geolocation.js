@@ -7,7 +7,11 @@ export function getCurrentPosition() {
     }
     navigator.geolocation.getCurrentPosition(
       (pos) => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
-      () => reject(new Error('위치 권한이 꺼져 있어요.')),
+      (err) => {
+        const e = new Error('위치 권한이 꺼져 있어요.');
+        e.code = err.code; // 1=PERMISSION_DENIED, 2=UNAVAILABLE, 3=TIMEOUT
+        reject(e);
+      },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
   });
