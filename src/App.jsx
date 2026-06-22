@@ -215,6 +215,14 @@ export default function App() {
             🌙
           </button>
         </div>
+        <button
+          className="hero__reload"
+          onClick={() => window.location.reload()}
+          aria-label="앱 새로고침"
+          title="전체 새로고침"
+        >
+          ↺
+        </button>
       </header>
 
       <LocationBar

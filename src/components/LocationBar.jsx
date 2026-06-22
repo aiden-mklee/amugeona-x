@@ -40,18 +40,30 @@ export default function LocationBar({ center, mode, loading, onUseGps, onSelectR
   return (
     <section className="locbar">
       <div className="locbar__current">
-        <span className="locbar__pin" aria-hidden>📍</span>
-        <span className="locbar__label">
-          {center ? center.label : loading ? '위치 찾는 중…' : '위치 없음'}
-          {mode === 'gps' && gpsAddr && (
-            <span className="locbar__addr">({gpsAddr})</span>
-          )}
-        </span>
-        {mode === 'manual' && <span className="tag tag--sub">검색지역</span>}
-        {mode === 'manual' && (
-          <button className="locbar__reset" onClick={onUseGps} disabled={loading}>
-            내 위치로
+        {mode === 'gps' ? (
+          <button
+            className="locbar__gps"
+            onClick={onUseGps}
+            disabled={loading}
+            title="위치 다시 찾기"
+          >
+            <span className="locbar__pin" aria-hidden>📍</span>
+            <span className="locbar__label">
+              {center ? center.label : loading ? '위치 찾는 중…' : '위치 없음'}
+              {gpsAddr && <span className="locbar__addr">({gpsAddr})</span>}
+            </span>
           </button>
+        ) : (
+          <>
+            <span className="locbar__pin" aria-hidden>📍</span>
+            <span className="locbar__label">
+              {center ? center.label : loading ? '위치 찾는 중…' : '위치 없음'}
+            </span>
+            <span className="tag tag--sub">검색지역</span>
+            <button className="locbar__reset" onClick={onUseGps} disabled={loading}>
+              내 위치로
+            </button>
+          </>
         )}
       </div>
 
