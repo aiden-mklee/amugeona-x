@@ -289,6 +289,7 @@ export default function App() {
   };
 
   return (
+    <>
     <div className="app">
       <header className="hero">
         <h1 className="hero__title">아무거나 금지</h1>
@@ -365,8 +366,9 @@ export default function App() {
       <footer className="foot">
         결과를 누르면 카카오맵으로 이동합니다 · 메뉴·길찾기는 거기서 확인
       </footer>
-
-      <InstallBanner />
     </div>
+
+    <InstallBanner />
+    </>
   );
 }

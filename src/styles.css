@@ -76,7 +76,7 @@ button {
 .app {
   background: var(--app-bg);
   border-radius: 24px;
-  padding: 40px 20px calc(96px + env(safe-area-inset-bottom));
+  padding: 40px 20px calc(80px + env(safe-area-inset-bottom));
   max-width: 480px;
   width: 100%;
   box-shadow: var(--app-shadow);
@@ -1019,14 +1019,20 @@ body.night .card--school {
 
 /* ── install banner ── */
 .install-banner {
+  position: fixed;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(calc(100vw - 32px), 448px);
+  z-index: 350;
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 12px;
   padding: 12px 14px;
-  background: var(--accent-bg);
+  background: var(--app-bg);
   border: 1.5px solid var(--accent-border);
   border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   transition: background 0.3s, border-color 0.3s;
 }
 .install-banner__text {
