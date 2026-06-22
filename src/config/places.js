@@ -17,7 +17,6 @@ export const CAFETERIAS = [
     id: 'cafeteria-peony',
     place_name: '피오니 (학생식당)',
     address: '지운관 1층',
-    menuKey: 'peony',
     isCafeteria: true,
     place_url: 'https://www.kbu.ac.kr/kor/CMS/DietMenuMgr/list.do?mCode=MN203&searchDietCategory=4',
   },
@@ -50,6 +49,15 @@ export const SPECIAL_PICKS = [
     category_name: '사내 식당으로',
     isSpecial: true,
   },
+];
+
+// 결과 필터 정의 (id, label). 앞 3개는 SPECIAL_PICKS 매핑, 뒤 2개는 카테고리 판정.
+export const FILTER_DEFS = [
+  { id: 'delivery',    label: '배달' },
+  { id: 'convenience', label: '편의점' },
+  { id: 'cafeteria',   label: '구내식당' },
+  { id: 'bar',         label: '술집' },
+  { id: 'snack',       label: '간식' },
 ];
 
 // 거리 프리셋. radius 는 카카오 카테고리 검색에 넘기는 미터값.
