@@ -360,7 +360,6 @@ export default function App() {
         canRefresh={filteredPoolSize > 45}
         onRefresh={refreshResults}
         filterEmpty={filterEmpty}
-        onBlacklist={addToBlacklist}
       />
 
       <footer className="foot">

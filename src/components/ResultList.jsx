@@ -8,7 +8,6 @@ export default function ResultList({
   canRefresh,
   onRefresh,
   filterEmpty,
-  onBlacklist,
 }) {
   if (loading) return <p className="muted">주변을 살펴보는 중…</p>;
 
@@ -40,34 +39,22 @@ export default function ResultList({
               r.isCafeteria ? 'card--school' : ''
             }`}
           >
-            <div className="card__inner">
-              <a href={r.place_url} target="_blank" rel="noreferrer">
-                <div className="card__top">
-                  <strong className="card__name">{r.place_name}</strong>
-                  {r.isCafeteria ? (
-                    <span className="tag tag--school">학식</span>
-                  ) : (
-                    <span className="card__dist">
-                      {carMode
-                        ? formatDistance(r.distance)
-                        : `도보 ${walkMinutes(r.distance)}분`}
-                    </span>
-                  )}
-                </div>
-                {r.category_name && <div className="card__cat">{r.category_name}</div>}
-                {r.address && <div className="card__addr">{r.address}</div>}
-              </a>
-              {!r.isCafeteria && (
-                <button
-                  className="card__ban"
-                  onClick={() => onBlacklist(r.id, r.place_name)}
-                  title="이 가게 제외"
-                  aria-label={`${r.place_name} 제외`}
-                >
-                  🚫
-                </button>
-              )}
-            </div>
+            <a href={r.place_url} target="_blank" rel="noreferrer">
+              <div className="card__top">
+                <strong className="card__name">{r.place_name}</strong>
+                {r.isCafeteria ? (
+                  <span className="tag tag--school">학식</span>
+                ) : (
+                  <span className="card__dist">
+                    {carMode
+                      ? formatDistance(r.distance)
+                      : `도보 ${walkMinutes(r.distance)}분`}
+                  </span>
+                )}
+              </div>
+              {r.category_name && <div className="card__cat">{r.category_name}</div>}
+              {r.address && <div className="card__addr">{r.address}</div>}
+            </a>
           </li>
         ))}
       </ul>
