@@ -71,13 +71,19 @@ export default function Verdict({ picked, onPick, disabled, isNight, results, on
   const handleShare = async () => {
     if (!picked) return;
     const label = isNight ? '저녁' : '점심';
-    const text = `오늘 ${label}은 ${picked.place_name}!`;
     const url = picked.place_url || '';
+    const body = [
+      `오늘 ${label}은 ${picked.place_name}!`,
+      url,
+      '아무거나금지가 골라줬어요 🎯',
+    ].filter(Boolean).join('\n');
+
     if (navigator.share) {
-      try { await navigator.share({ title: picked.place_name, text, url }); } catch {}
+      // url을 text 안에 포함해 카카오톡에서 한 메시지로 전송
+      try { await navigator.share({ title: picked.place_name, text: body }); } catch {}
     } else {
       try {
-        await navigator.clipboard.writeText(url ? `${text} ${url}` : text);
+        await navigator.clipboard.writeText(body);
         setToast('링크 복사됨');
         clearTimeout(toastTimerRef.current);
         toastTimerRef.current = setTimeout(() => setToast(''), 2000);
