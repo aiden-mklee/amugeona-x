@@ -63,7 +63,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: env(safe-area-inset-top, 0px) 16px 0;
+  padding: env(safe-area-inset-top, 0px) 0 0;
   overflow-x: hidden;
   transition: background 0.3s;
 }
@@ -75,15 +75,12 @@ button {
 
 .app {
   background: var(--app-bg);
-  border-radius: 24px;
+  border-radius: 0;
   padding: 40px 20px calc(80px + env(safe-area-inset-bottom));
-  max-width: 480px;
   width: 100%;
-  box-shadow: var(--app-shadow);
-  margin-top: 16px;
-  margin-bottom: 16px;
+  min-height: calc(100vh - env(safe-area-inset-top, 0px));
   overflow-x: hidden;
-  transition: background 0.3s, box-shadow 0.3s;
+  transition: background 0.3s;
 }
 
 /* ── hero ── */
@@ -341,7 +338,7 @@ button {
   bottom: calc(20px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  width: min(calc(100vw - 48px), 432px);
+  width: calc(100vw - 48px);
   padding: 16px;
   background: var(--accent);
   color: var(--accent-text);
@@ -780,7 +777,6 @@ body.night .card--school {
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
-  max-width: 480px;
   background: var(--app-bg);
   border-radius: 20px 20px 0 0;
   z-index: 401;
@@ -1013,6 +1009,16 @@ body.night .card--school {
   box-shadow: none;
   animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+.verdict__card--school {
+  background: #f3faf6;
+  border-color: #a8d5be;
+  box-shadow: none;
+  animation: slam 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+body.night .verdict__card--school {
+  background: rgba(46, 125, 91, 0.12);
+  border-color: rgba(46, 125, 91, 0.3);
+}
 .verdict__special-tag {
   display: inline-block;
   margin-bottom: 6px;
@@ -1028,7 +1034,7 @@ body.night .card--school {
   bottom: calc(84px + env(safe-area-inset-bottom));
   left: 50%;
   transform: translateX(-50%);
-  width: min(calc(100vw - 32px), 448px);
+  width: calc(100vw - 32px);
   z-index: 350;
   display: flex;
   align-items: center;

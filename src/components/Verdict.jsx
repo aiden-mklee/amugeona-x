@@ -122,7 +122,7 @@ export default function Verdict({ picked, onPick, disabled, isNight, results, on
             <Tag
               ref={cardRef}
               key={spinning ? 'spin' : picked.id}
-              className={`verdict__card${spinning ? ' verdict__card--spinning' : ''}${!spinning && isSpecial ? ' verdict__card--special' : ''}`}
+              className={`verdict__card${spinning ? ' verdict__card--spinning' : ''}${!spinning && isSpecial ? ' verdict__card--special' : ''}${!spinning && picked.isCafeteria ? ' verdict__card--school' : ''}`}
               {...linkProps}
               onClick={spinning ? (e) => e.preventDefault() : undefined}
             >
@@ -139,7 +139,9 @@ export default function Verdict({ picked, onPick, disabled, isNight, results, on
                 <span className="verdict__cat">{picked.category_name}</span>
               )}
               {!spinning && picked.place_url && (
-                <span className="verdict__go">카카오맵에서 보기 →</span>
+                <span className="verdict__go">
+                  {picked.isCafeteria ? '홈페이지에서 메뉴 확인 →' : '카카오맵에서 보기 →'}
+                </span>
               )}
             </Tag>
 

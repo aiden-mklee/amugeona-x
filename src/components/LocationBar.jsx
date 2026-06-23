@@ -96,6 +96,7 @@ export default function LocationBar({ center, mode, loading, onUseGps, onSelectR
           <div className="locbar__search">
             <input
               type="text"
+              autoFocus
               value={q}
               onChange={(e) => setQ(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && search()}
