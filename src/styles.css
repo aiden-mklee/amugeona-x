@@ -24,7 +24,6 @@
 }
 
 body.night {
-  background: #0d1526;
   --accent: #ffd166;
   --accent-hover: #f5c030;
   --accent-bg: rgba(255, 209, 102, 0.08);
@@ -58,7 +57,7 @@ body.night {
 body {
   font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
   letter-spacing: -0.02em;
-  background: #f5f0eb;
+  background: var(--app-bg);
   min-height: 100vh;
   display: flex;
   align-items: flex-start;
@@ -1156,6 +1155,10 @@ body.night .verdict__card--school {
 @media (min-width: 600px) {
   body {
     padding: 16px 16px 0;
+    background: #f5f0eb;
+  }
+  body.night {
+    background: #0d1526;
   }
   .app {
     max-width: 480px;
