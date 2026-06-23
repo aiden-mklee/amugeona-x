@@ -1151,3 +1151,24 @@ body.night .verdict__card--school {
     transition: none !important;
   }
 }
+
+/* ── 데스크톱: 카드 레이아웃 복원 ── */
+@media (min-width: 600px) {
+  body {
+    padding: 16px 16px 0;
+  }
+  .app {
+    max-width: 480px;
+    border-radius: 24px;
+    box-shadow: var(--app-shadow);
+    margin-top: 0;
+    margin-bottom: 16px;
+    min-height: auto;
+  }
+  .float-btn {
+    width: min(calc(100vw - 48px), 432px);
+  }
+  .install-banner {
+    width: min(calc(100vw - 32px), 448px);
+  }
+}
